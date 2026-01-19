@@ -1,6 +1,6 @@
 # 1. Compiler setup
 CC = gcc
-CFLAGS = -Wall -Wextra -I./src -I./include
+CFLAGS = -Wall -Wextra -I./src 
 
 SRCS = src/filesystem/file_system.c \
        src/interrupt/interrupt.c \
