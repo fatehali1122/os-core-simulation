@@ -18,6 +18,7 @@ SRCS = src/filesystem/file_system.c \
        src/interrupt/interrupt.c \
        src/memory/memory_manager.c \
        src/process/process_scheduler.c \
+	   src/process/process.c \
        src/syscall/syscall.c \
        src/main.c
 

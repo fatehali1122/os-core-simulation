@@ -1,4 +1,4 @@
-/*#include <stdio.h>
+#include <stdio.h>
 #include "memory_manager.h"     //Linkage
 
 // This is a temporary main function to test the build system
@@ -17,8 +17,8 @@ int main() {
     terminateProcess(1);
 	
     return 0;
-}*/
-#include <stdio.h>
+}
+/*#include <stdio.h>
 #include "memory_manager.h"
 
 void printHeader(char* title) {
@@ -89,4 +89,4 @@ int main() {
     printf("================================================\n");
 
     return 0;
-}
+}*/
