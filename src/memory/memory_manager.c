@@ -118,3 +118,8 @@ void terminateProcess(int pid) {
         printf("Process %d not found or does not exist\n", pid);
     }
 }
+
+int getprocessTableCount()
+{
+    return processTableCount;
+}

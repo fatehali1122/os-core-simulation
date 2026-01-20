@@ -22,6 +22,10 @@ int processCreation(int priority,int burstTime,int memoryUsage);
 void changeProcessState(int pid);
 //terminates the process explicitly
 void terminateProcess(int pid);
+//This return array allocated size
+int getprocessTableCount();
+
+
 
 #endif
 
