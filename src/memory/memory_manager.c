@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "memory_manager.h"           //Linkage
 
-static int count = 1;          //global variable for assigning unique PID
+static int count = 0;          //global variable for assigning unique PID
 struct PCB processTable[100];
 static int processTableCount = 0;
 
@@ -14,8 +14,7 @@ int processCreation(int priority,int burstTime,int memoryUsage)
     }
     struct PCB p1;
 
-    p1.pid = count;
-    count++;
+    p1.pid = ++count;
     p1.status = NEW;
     p1.priority = priority;
     p1.burstTime = burstTime;
@@ -40,18 +39,25 @@ void changeProcessState(int pid)
             {
                 case NEW:
                 processTable[i].status = READY;
+                printf("Status: NEW --> READY\n");
                 break;
 
                 case READY:
                 processTable[i].status = RUNNING;
+                printf("Status: READY --> RUNNING\n");
+
                 break;
                 
                 case RUNNING:
                 processTable[i].status = WAITING;
+                printf("Status: RUNNING --> WAITING\n");
                 break;
+
                 case WAITING:
                 processTable[i].status = READY;
-                return;
+                printf("Status: WAITING --> READY\n");
+                break;
+                
                 default:
                 printf("INVALID STATE\n");
                 break;
@@ -66,51 +72,49 @@ void changeProcessState(int pid)
 }
 /*void terminateProcess(int pid) {
 	
+	int found = 0;
+	
 	for(int i = 0; i < 100; i++) {
 		
 		if(processTable[i].pid == pid && processTable[i].used == 1) {
-			
+		
 			processTable[i].status = TERMINATED;
 			processTable[i].used = 0; //Free slot
 			printf("Process %d Terminated.\n", pid);
+			found = 1;	
 			break;
-
-		}
-		else {
 			
-			printf("Process %d not found or does not exist", pid);
-			break;
 			
 		}
 
 	}
+	if(found == 0) {
+			
+			printf("Process %d not found or does not exist", pid);
+						
+		}
 	
 	
 }*/
 void terminateProcess(int pid) {
 	
-	for(int i = 0; i < processTableCount; i++) {
-		
-		if(processTable[i].pid == pid) {
-			
-			
-			 for(int j = i; j < processTableCount - 1; j++) {
-				 
-                     processTable[j] = processTable[j+1];
-                }
-				
-            processTableCount--;              
-			printf("Process %d Terminated.\n", pid);
-			break;
-		}
-		
-		else {
-			
-			printf("Process %d not found or does not exist", pid);
-			break;
-			
-		}
-				
-	}
-	
+    int found = 0;
+
+    for(int i = 0; i < processTableCount; i++) {
+        if(processTable[i].pid == pid) {
+            
+            for(int j = i; j < processTableCount - 1; j++) {
+                processTable[j] = processTable[j+1];
+            }
+            
+            processTableCount--;
+            printf("Process %d Terminated.\n", pid);
+            found = 1;
+            break;
+        }
+    }
+    
+    if(found == 0) {
+        printf("Process %d not found or does not exist\n", pid);
+    }
 }

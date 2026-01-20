@@ -9,8 +9,7 @@ enum ProcessState
 struct PCB
 {
     int pid;
-    int burstTime;
-	int used;
+    int burstTime; //used flag (int used) deleted
     int memoryUsage;
     enum ProcessState status;
     int priority;

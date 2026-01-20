@@ -6,8 +6,9 @@ int main() {
     int result = processCreation(1,1,1);
     printf("%d \n",result);
 
-    changeProcessState(75);
+    changeProcessState(1);
+
+    terminateProcess(1);
     
-    printf("Build successful! The OS Simulation is running.\n");
     return 0;
 }
