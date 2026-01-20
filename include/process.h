@@ -1,5 +1,5 @@
-#ifndef MEMORY_MANAGER_H   //This header file will be used multiple times,this we use this to define only once 
-#define MEMORY_MANAGER_H
+#ifndef PROCESS_H   //This header file will be used multiple times,this we use this to define only once 
+#define PROCESS_H
 
 enum ProcessState
 {

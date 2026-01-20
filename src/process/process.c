@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "memory_manager.h"           //Linkage
+#include "process.h"           //Linkage
 
 static int count = 0;          //global variable for assigning unique PID
 struct PCB processTable[100];
