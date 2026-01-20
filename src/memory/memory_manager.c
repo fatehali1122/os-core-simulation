@@ -40,22 +40,30 @@ void changeProcessState(int pid)
             {
                 case NEW:
                 processTable[i].status = READY;
+                printf("Status: NEW --> READY");
                 break;
 
                 case READY:
                 processTable[i].status = RUNNING;
+                printf("Status: READY --> RUNNING");
+
                 break;
                 
                 case RUNNING:
                 processTable[i].status = WAITING;
+                printf("Status: RUNNING --> WAITING");
                 break;
+
                 case WAITING:
-                for(int j = i; j < processTableCount - 1;j++)
-                {
-                    processTable[j] = processTable[j+1];
-                }
-                processTableCount--;
-                return;
+                processTable[i].status = READY;
+                printf("Status: WAITING --> READY");
+                break;
+                // for(int j = i; j < processTableCount - 1;j++)
+                // {
+                //     processTable[j] = processTable[j+1];
+                // }
+                // processTableCount--;              
+                // return;
                 default:
                 printf("INVALID STATE\n");
                 break;
