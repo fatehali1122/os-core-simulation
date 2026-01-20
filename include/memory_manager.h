@@ -10,6 +10,7 @@ struct PCB
 {
     int pid;
     int burstTime;
+	int used;
     int memoryUsage;
     enum ProcessState status;
     int priority;
@@ -20,6 +21,8 @@ struct PCB
 int processCreation(int priority,int burstTime,int memoryUsage);
 //This funtion changes status of process
 void changeProcessState(int pid);
+//terminates the process explicitly
+void terminateProcess(int pid);
 
 #endif
 

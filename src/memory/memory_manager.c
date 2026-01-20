@@ -50,11 +50,7 @@ void changeProcessState(int pid)
                 processTable[i].status = WAITING;
                 break;
                 case WAITING:
-                for(int j = i; j < processTableCount - 1;j++)
-                {
-                    processTable[j] = processTable[j+1];
-                }
-                processTableCount--;
+                processTable[i].status = READY;
                 return;
                 default:
                 printf("INVALID STATE\n");
@@ -67,4 +63,54 @@ void changeProcessState(int pid)
     {
         printf("Process with this pid not found\n");
     }
+}
+/*void terminateProcess(int pid) {
+	
+	for(int i = 0; i < 100; i++) {
+		
+		if(processTable[i].pid == pid && processTable[i].used == 1) {
+			
+			processTable[i].status = TERMINATED;
+			processTable[i].used = 0; //Free slot
+			printf("Process %d Terminated.\n", pid);
+			break;
+
+		}
+		else {
+			
+			printf("Process %d not found or does not exist", pid);
+			break;
+			
+		}
+
+	}
+	
+	
+}*/
+void terminateProcess(int pid) {
+	
+	for(int i = 0; i < processTableCount; i++) {
+		
+		if(processTable[i].pid == pid) {
+			
+			
+			 for(int j = i; j < processTableCount - 1; j++) {
+				 
+                     processTable[j] = processTable[j+1];
+                }
+				
+            processTableCount--;              
+			printf("Process %d Terminated.\n", pid);
+			break;
+		}
+		
+		else {
+			
+			printf("Process %d not found or does not exist", pid);
+			break;
+			
+		}
+				
+	}
+	
 }
