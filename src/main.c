@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "memory/memory_manager.h"     //Linkage
+#include "memory_manager.h"     //Linkage
 
 // This is a temporary main function to test the build system
 int main() {

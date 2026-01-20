@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include "memory_manager.h"           //Linkage
 
-int count = 1;          //global variable for assigning unique PID
+static int count = 1;          //global variable for assigning unique PID
 struct PCB processTable[100];
-int processTableCount = 0;
+static int processTableCount = 0;
 
 int processCreation(int priority,int burstTime,int memoryUsage)
 {
