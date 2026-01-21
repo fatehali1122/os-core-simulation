@@ -16,14 +16,25 @@ struct PCB
 
 };
 
+struct Node {
+	
+struct PCB pcb;
+struct Node* next;
+	
+};
+
 //This funtions create a process
 int processCreation(int priority,int burstTime,int memoryUsage);
 //This funtion changes status of process
 void changeProcessState(int pid);
 //terminates the process explicitly
 void terminateProcess(int pid);
-//This return array allocated size
-int getprocessTableCount();
+//getter for head node
+struct Node* getProcessHead();
+//getter for state of process
+const char* getStateString(enum ProcessState s);
+
+
 
 
 
