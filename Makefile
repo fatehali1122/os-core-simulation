@@ -1,18 +1,31 @@
-# 1. Compiler setup
+ifeq ($(OS),Windows_NT)
+	
+	RM = del
+	TARGET = os_simulation.exe
+	
+else 
+
+	RM = rm -f
+	TARGET = os_simulation
+	
+endif
+
+# Compiler setup
 CC = gcc
-CFLAGS = -Wall -Wextra -I./src
+CFLAGS = -Wall -Wextra -I./include 
 
 SRCS = src/filesystem/file_system.c \
        src/interrupt/interrupt.c \
        src/memory/memory_manager.c \
        src/process/process_scheduler.c \
+	   src/process/process.c \
        src/syscall/syscall.c \
+	   tests/ProcessCreationUpdateTermination.c \
        src/main.c
 
-TARGET = os_simulation
 
 all:
 	$(CC) $(CFLAGS) $(SRCS) -o $(TARGET)
 
 clean:
-	rm -f $(TARGET)
+	$(RM) $(TARGET)
