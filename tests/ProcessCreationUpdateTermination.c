@@ -20,6 +20,11 @@ void printListSnapshot() {
 }
 
 int main() {
+
+
+	printf("Size of PCB struct: %I64u\n", sizeof(struct PCB));
+	printf("Size of Node struct: %I64u\n", sizeof(struct Node));
+
     printf("========================================\n");
     printf("  TESTING: STATE CHANGES & TERMINATION  \n");
     printf("========================================\n");
@@ -70,7 +75,7 @@ int main() {
 
     // 7. TEST ERROR HANDLING
     printf("\n--- Test 6: Delete Non-Existent Process ---\n");
-    terminateProcess(99); // Should print "not found"
+    terminateProcess(99); // Should print "not found"*/
 
     return 0;
 }
