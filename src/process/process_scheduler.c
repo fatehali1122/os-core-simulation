@@ -41,7 +41,7 @@ void sched_init(void) {
 
 void sched_update(struct Node* _p, int _t) {
     if (!_p) return;
-    int _id = _ID(_p);
+    //int _id = _ID(_p);
     
     _S(_p)._t_tot += _t;
     _S(_p)._t_sl = (_S(_p)._t_sl > (unsigned int)_t) ? (_S(_p)._t_sl - _t) : 0;

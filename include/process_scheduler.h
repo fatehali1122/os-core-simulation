@@ -1,7 +1,7 @@
 #ifndef PROCESS_SCHEDULER_H
 #define PROCESS_SCHEDULER_H
 
-#include "../../include/process.h"
+#include "process.h"
 
 #define _MLFQ_L 4
 #define _Q_BS 2
