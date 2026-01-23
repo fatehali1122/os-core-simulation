@@ -75,5 +75,55 @@ int main() {
     printf("\n--- Test 6: Delete Non-Existent Process ---\n");
     terminateProcess(99); // Should print "not found"
 
+
+    printf("\n========================================\n");
+    printf("  TESTING: FCFS SCHEDULING (NEXT PROCESS)\n");
+    printf("========================================\n");
+
+    /* Create fresh processes for FCFS test */
+    processCreation(1, 5, 100);  // PID 4
+    processCreation(1, 5, 100);  // PID 5
+    processCreation(1, 5, 100);  // PID 6
+
+    printListSnapshot();
+
+    /* Move all to READY */
+    changeProcessState(4); // NEW -> READY
+    changeProcessState(5); // NEW -> READY
+    changeProcessState(6); // NEW -> READY
+
+    printf("\n--- FCFS Step 1: Schedule Next Process ---\n");
+    int nextPid = scheduleNextProcessFCFS();
+    printf("Next Scheduled PID (Expected: 4): %d\n", nextPid);
+
+    dispatchFCFS();
+    printListSnapshot();
+
+    printf("\n--- FCFS Step 2: Terminate Running Process ---\n");
+    terminateProcess(4);
+    printListSnapshot();
+
+    printf("\n--- FCFS Step 3: Schedule Next Process ---\n");
+    nextPid = scheduleNextProcessFCFS();
+    printf("Next Scheduled PID (Expected: 5): %d\n", nextPid);
+
+    dispatchFCFS();
+    printListSnapshot();
+
+    printf("\n--- FCFS Step 4: Terminate Running Process ---\n");
+    terminateProcess(5);
+    printListSnapshot();
+
+    printf("\n--- FCFS Step 5: Schedule Last Process ---\n");
+    nextPid = scheduleNextProcessFCFS();
+    printf("Next Scheduled PID (Expected: 6): %d\n", nextPid);
+
+    dispatchFCFS();
+    printListSnapshot();
+
+    printf("\n--- FCFS Step 6: Cleanup ---\n");
+    terminateProcess(6);
+    printListSnapshot();
+    
     return 0;
 }

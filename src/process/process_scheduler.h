@@ -20,6 +20,8 @@ void sched_init(void);
 struct Node* sched_next(void);
 void sched_update(struct Node* _p, int _t);
 void sched_boost(void);
+void sched_fcfs_update(struct Node* p, int t);
+struct Node* sched_next_fcfs(void);
 
 #endif
 
