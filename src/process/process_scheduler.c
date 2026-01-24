@@ -2,6 +2,7 @@
 // baqi ap ne khud implement krne hain
 
 #include "process_scheduler.h"
+#include<stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -84,13 +85,54 @@ struct Node* sched_next(void) {
             return _tgt;
         }
     }
-    return NULL;
+	return NULL;
 }
+
+
+    /* ================= FCFS Scheduling ================= */
+
+/* Scheduler: Select next READY process (FCFS) */
+int scheduleNextProcessFCFS(void)
+{
+    struct Node *temp = getProcessHead();
+
+    while (temp != NULL) {
+        if (temp->pcb.status == READY)
+            return temp->pcb.pid;
+        temp = temp->next;
+    }
+
+    return -1;  // No READY process
+}
+/* =================  Dispatching FCFS ================= */
+
+void dispatchFCFS(void)
+{
+    int pid = scheduleNextProcessFCFS();
+
+    if (pid == -1) {
+        printf("No READY process available for FCFS\n");
+        return;
+    }
+}
+/* =================  get TABLECOUNT ================= */
+
+int getprocessTableCount() {
+    struct Node* temp = getProcessHead();
+    int count = 0;
+    while (temp != NULL) {
+        if (temp->pcb.status != TERMINATED) {
+            count++;
+        }
+        temp = temp->next;
+	}
+		return count;
+}
+    
 struct Node* sched_next_fcfs(void)
 {
     // Continue running process (rule) 
-    if (_fcfs_running &&
-        _fcfs_running->pcb.status == RUNNING) {
+    if (_fcfs_running && _fcfs_running->pcb.status == RUNNING) {
         return _fcfs_running;
     }
 
@@ -113,14 +155,15 @@ void sched_fcfs_update(struct Node* p, int t)
 {
     if (!p) return;
 
-    p->pcb.burstTime =
-        (p->pcb.burstTime > t) ?
-        (p->pcb.burstTime - t) : 0;
+    p->pcb.burstTime = (p->pcb.burstTime > t) ? (p->pcb.burstTime - t) : 0;
 
     _g_clk += t;
 
     if (p->pcb.burstTime <= 0) {
+
         p->pcb.status = TERMINATED;
         _fcfs_running = NULL; /* FCFS slot freed */
+
     }
+
 }

@@ -1,7 +1,10 @@
 /*#include <stdio.h>
 #include "process.h"     //Linkage
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 556f180e47cb2172e5b0f71de2ee97895e5f6621
 void showMenu(void)
 {
     printf("\n===== OS PROCESS SIMULATOR =====\n");
@@ -28,6 +31,10 @@ void printProcessList(void)
     }
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 556f180e47cb2172e5b0f71de2ee97895e5f6621
 // This is a temporary main function to test the build system
 int main() {
     printf("------Before executing-----\n");
@@ -42,7 +49,12 @@ int main() {
 	printf("---Testing if process exists or not after execution---\n");
     changeProcessState(1); //changing non-existent process state
     terminateProcess(1);
+<<<<<<< HEAD
      int choice;
+=======
+
+      int choice;
+>>>>>>> 556f180e47cb2172e5b0f71de2ee97895e5f6621
 
     while (1) {
         showMenu();
