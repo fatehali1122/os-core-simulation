@@ -1,3 +1,6 @@
+//Compile Command: make
+//Run Command: ./os_simulation
+
 #include <stdio.h>
 #include "process.h"
 
