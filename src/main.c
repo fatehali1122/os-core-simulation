@@ -1,6 +1,40 @@
 /*#include <stdio.h>
 #include "process.h"     //Linkage
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> 556f180e47cb2172e5b0f71de2ee97895e5f6621
+void showMenu(void)
+{
+    printf("\n===== OS PROCESS SIMULATOR =====\n");
+    printf("1. Create Process\n");
+    printf("2. Change Process State\n");
+    printf("3. Schedule Next Process (FCFS)\n");
+    printf("4. Terminate Process\n");
+    printf("5. Show Process List\n");
+    printf("0. Exit\n");
+    printf("Choice: ");
+}
+
+void printProcessList(void)
+{
+    struct Node *temp = getProcessHead();
+    printf("\nPID   STATE\n");
+    printf("------------\n");
+
+    while (temp != NULL) {
+        printf("%-5d %s\n",
+               temp->pcb.pid,
+               getStateString(temp->pcb.status));
+        temp = temp->next;
+    }
+}
+
+<<<<<<< HEAD
+=======
+
+>>>>>>> 556f180e47cb2172e5b0f71de2ee97895e5f6621
 // This is a temporary main function to test the build system
 int main() {
     printf("------Before executing-----\n");
@@ -15,6 +49,50 @@ int main() {
 	printf("---Testing if process exists or not after execution---\n");
     changeProcessState(1); //changing non-existent process state
     terminateProcess(1);
+<<<<<<< HEAD
+     int choice;
+=======
+
+      int choice;
+>>>>>>> 556f180e47cb2172e5b0f71de2ee97895e5f6621
+
+    while (1) {
+        showMenu();
+        scanf("%d", &choice);
+
+        if (choice == 0)
+            break;
+
+        if (choice == 1) {
+            int p, b, m;
+            printf("Priority BurstTime MemoryUsage: ");
+            scanf("%d %d %d", &p, &b, &m);
+            int pid = processCreation(p, b, m);
+            printf("Process created with PID %d\n", pid);
+        }
+
+        else if (choice == 2) {
+            int pid;
+            printf("Enter PID: ");
+            scanf("%d", &pid);
+            changeProcessState(pid);
+        }
+
+        else if (choice == 3) {
+            dispatchFCFS();
+        }
+
+        else if (choice == 4) {
+            int pid;
+            printf("Enter PID: ");
+            scanf("%d", &pid);
+            terminateProcess(pid);
+        }
+
+        else if (choice == 5) {
+            printProcessList();
+        }
+    }
 	
     return 0;
 }*/

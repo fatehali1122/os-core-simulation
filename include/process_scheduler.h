@@ -1,7 +1,7 @@
 #ifndef PROCESS_SCHEDULER_H
 #define PROCESS_SCHEDULER_H
 
-#include "../../include/process.h"
+#include "process.h"
 
 #define _MLFQ_L 4
 #define _Q_BS 2
@@ -20,6 +20,12 @@ void sched_init(void);
 struct Node* sched_next(void);
 void sched_update(struct Node* _p, int _t);
 void sched_boost(void);
+void sched_fcfs_update(struct Node* p, int t);
+struct Node* sched_next_fcfs(void);
+
+int scheduleNextProcessFCFS(void);
+void dispatchFCFS(void);
+int getprocessTableCount();
 
 #endif
 
