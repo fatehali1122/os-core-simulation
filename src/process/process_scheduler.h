@@ -21,5 +21,9 @@ struct Node* sched_next(void);
 void sched_update(struct Node* _p, int _t);
 void sched_boost(void);
 
+int scheduleNextProcessFCFS(void);
+void dispatchFCFS(void);
+int getprocessTableCount();
+
 #endif
 

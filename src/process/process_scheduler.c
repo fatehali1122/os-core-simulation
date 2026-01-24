@@ -82,5 +82,45 @@ struct Node* sched_next(void) {
             return _tgt;
         }
     }
+
+
+    /* ================= FCFS Scheduling ================= */
+
+/* Scheduler: Select next READY process (FCFS) */
+int scheduleNextProcessFCFS(void)
+{
+    struct Node *temp = head;
+
+    while (temp != NULL) {
+        if (temp->pcb.status == READY)
+            return temp->pcb.pid;
+        temp = temp->next;
+    }
+
+    return -1;  // No READY process
+}
+/* =================  Dispatching FCFS ================= */
+
+void dispatchFCFS(void)
+{
+    int pid = scheduleNextProcessFCFS();
+
+    if (pid == -1) {
+        printf("No READY process available for FCFS\n");
+        return;
+    }
+/* =================  get TABLECOUNT ================= */
+
+    int getprocessTableCount() {
+    struct Node* temp = getProcessHead();
+    int count = 0;
+    while (temp != NULL) {
+        if (temp->pcb.status != TERMINATED) {
+            count++;
+        }
+        temp = temp->next;
+    }
+    return count;
+}
     return NULL;
 }
