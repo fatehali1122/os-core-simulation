@@ -30,9 +30,9 @@ int main() {
     printf("========================================\n");
 
     /* Create fresh processes for FCFS test */
-    processCreation(1, 5, 100);  // PID 4
-    processCreation(1, 5, 100);  // PID 5
-    processCreation(1, 5, 100);  // PID 6
+    processCreation(1, 5, 100);  // PID 1
+    processCreation(1, 5, 100);  // PID 2
+    processCreation(1, 5, 100);  // PID 3
 
     printListSnapshot();
 
@@ -72,6 +72,7 @@ int main() {
 
     printf("\n--- FCFS Step 6: Cleanup ---\n");
     terminateProcess(3);
+	dispatchFCFS();
     printListSnapshot();
 
     return 0;

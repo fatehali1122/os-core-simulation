@@ -111,7 +111,7 @@ void dispatchFCFS(void)
     int pid = scheduleNextProcessFCFS();
 
     if (pid == -1) {
-        printf("No READY process available for FCFS\n");
+        printf("\nNo READY process available for FCFS\n");
         return;
     }
 }
