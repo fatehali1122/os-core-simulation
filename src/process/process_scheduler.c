@@ -1,7 +1,7 @@
 // a process scheduler from my side
 // baqi ap ne khud implement krne hain
 
-#include "process_scheduler.h"
+#include "../../include/process_scheduler.h"
 #include<stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -165,5 +165,104 @@ void sched_fcfs_update(struct Node* p, int t)
         _fcfs_running = NULL; /* FCFS slot freed */
 
     }
+   }   // --- Round Robin Logic ---
+int scheduleNextProcessRR(void) {
+     // Scan linearly for the first READY process
+     struct Node* temp = getProcessHead();
+     while (temp) {
+         if (temp->pcb.status == READY) return temp->pcb.pid;
+         temp = temp->next;
+     }
+     return -1;
+}
 
+void dispatchRR(int time_quantum) {
+    struct Node* p = NULL;
+    struct Node* temp = getProcessHead();
+    
+    //  Find the first READY process
+    while (temp) {
+        if (temp->pcb.status == READY) {
+            p = temp;
+            break;
+        }
+        temp = temp->next;
+    }
+
+    if (!p) {
+        printf("No process to schedule (RR).\n");
+        return;
+    }
+
+    
+    p->pcb.status = RUNNING;
+    printf("Dispatching PID %d (RR) for max %d ticks\n", p->pcb.pid, time_quantum);
+
+    
+    int run_time = (p->pcb.burstTime < time_quantum) ? p->pcb.burstTime : time_quantum;
+    
+    
+    sched_fcfs_update(p, run_time); 
+
+    //Decision: Finish or Re-queue
+    if (p->pcb.status == TERMINATED) {
+        printf("Process %d Finished.\n", p->pcb.pid);
+        terminateProcess(p->pcb.pid);
+    } else {
+        printf("Process %d Time Slice expired (Remaining: %d). Re-queueing.\n", p->pcb.pid, p->pcb.burstTime);
+        p->pcb.status = READY; 
+  
+    }
+}
+
+// --- Priority Scheduling Logic ---
+int scheduleNextProcessPriority(void) {
+    struct Node* best = NULL;
+    int best_prio = 9999;
+    struct Node* temp = getProcessHead();
+    
+    // Scan list for lowest priority number (highest importance)
+    while(temp) {
+        if (temp->pcb.status == READY) {
+            if (temp->pcb.priority < best_prio) {
+                best_prio = temp->pcb.priority;
+                best = temp;
+            }
+        }
+        temp = temp->next;
+    }
+    return best ? best->pcb.pid : -1;
+}
+
+void dispatchPriority(void) {
+    struct Node* best = NULL;
+    int best_prio = 9999;
+
+    //  Find Highest Priority Process
+    struct Node* temp = getProcessHead();
+    while(temp) {
+        if (temp->pcb.status == READY) {
+            if (temp->pcb.priority < best_prio) {
+                best_prio = temp->pcb.priority;
+                best = temp;
+            }
+        }
+        temp = temp->next;
+    }
+
+    if (!best) {
+         printf("No process to schedule (Priority).\n");
+         return;
+    }
+
+    printf("Dispatching PID %d (Priority %d)\n", best->pcb.pid, best->pcb.priority);
+    
+    //  Run to completion 
+    best->pcb.status = RUNNING;
+    sched_fcfs_update(best, best->pcb.burstTime); 
+    
+    if(best->pcb.status == TERMINATED) {
+         printf("Process %d Finished.\n", best->pcb.pid);
+         terminateProcess(best->pcb.pid);
+    }
 }

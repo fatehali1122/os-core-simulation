@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
-#include "process.h"
+#include "../../include/process.h"
 
 static int processIdCount = 0;
 static struct Node* head = NULL;

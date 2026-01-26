@@ -1,9 +1,7 @@
-//Compile Command: make
-//Run Command: ./os_simulation
-
 #include <stdio.h>
-#include "process.h"
-#include "process_scheduler.h"
+
+#include "../include/process.h"
+#include "../include/process_scheduler.h"
 
 // Helper to visualize the whole chain
 void printListSnapshot() {
@@ -17,64 +15,77 @@ void printListSnapshot() {
 
     printf("   HEAD -> ");
     while(temp != NULL) {
-        printf("[PID: %d | %s] -> ", temp->pcb.pid, getStateString(temp->pcb.status));
+        printf("[PID: %d | Prio: %d | Burst: %d | %s] -> ", 
+               temp->pcb.pid, 
+               temp->pcb.priority, 
+               temp->pcb.burstTime,
+               getStateString(temp->pcb.status));
         temp = temp->next;
     }
     printf("NULL\n");
 }
 
 int main() {
+    sched_init(); 
 
+    // ==========================================
+    // TEST 1: ROUND ROBIN
+    // ==========================================
     printf("\n========================================\n");
-    printf("  TESTING: FCFS SCHEDULING (NEXT PROCESS)\n");
+    printf("  TEST 1: ROUND ROBIN (Quantum = 2)\n");
     printf("========================================\n");
 
-    /* Create fresh processes for FCFS test */
-    processCreation(1, 5, 100);  // PID 1
-    processCreation(1, 5, 100);  // PID 2
-    processCreation(1, 5, 100);  // PID 3
+    // Create 2 processes with long burst times
+    int p1 = processCreation(1, 6, 100);  // PID 1, Burst 6
+    int p2 = processCreation(1, 6, 100);  // PID 2, Burst 6
+
+    changeProcessState(p1); // Ready
+    changeProcessState(p2); // Ready
 
     printListSnapshot();
 
-    /* Move all to READY */
-    changeProcessState(1); // NEW -> READY
-    changeProcessState(2); // NEW -> READY
-    changeProcessState(3); // NEW -> READY
-
-    printf("\n--- FCFS Step 1: Schedule Next Process ---\n");
-    int nextPid = scheduleNextProcessFCFS();
-    printf("Next Scheduled PID (Expected: 1): %d\n", nextPid);
-
-    dispatchFCFS();
+    printf("\n--- RR Step 1: Dispatch PID 1 (Quantum 2) ---\n");
+    dispatchRR(2); // Should run PID 1 for 2 ticks. Remaining: 4. Re-queue.
     printListSnapshot();
 
-    printf("\n--- FCFS Step 2: Terminate Running Process ---\n");
-    terminateProcess(1);
+    printf("\n--- RR Step 2: Dispatch PID 2 (Quantum 2) ---\n");
+    
+    dispatchRR(2); 
     printListSnapshot();
 
-    printf("\n--- FCFS Step 3: Schedule Next Process ---\n");
-    nextPid = scheduleNextProcessFCFS();
-    printf("Next Scheduled PID (Expected: 2): %d\n", nextPid);
+    // Clean up
+    terminateProcess(p1);
+    terminateProcess(p2);
 
-    dispatchFCFS();
+    // ==========================================
+    // TEST 2: PRIORITY SCHEDULING
+    // ==========================================
+    printf("\n========================================\n");
+    printf("  TEST 2: PRIORITY SCHEDULING\n");
+    printf("========================================\n");
+
+    // Create processes with different priorities (Lower number = Higher Priority)
+    int low_prio_pid = processCreation(10, 5, 100); // Priority 10 (Low)
+    int high_prio_pid = processCreation(1, 5, 100); // Priority 1 (High)
+    int mid_prio_pid = processCreation(5, 5, 100);  // Priority 5 (Mid)
+
+    changeProcessState(low_prio_pid);
+    changeProcessState(high_prio_pid);
+    changeProcessState(mid_prio_pid);
+
     printListSnapshot();
 
-    printf("\n--- FCFS Step 4: Terminate Running Process ---\n");
-    terminateProcess(2);
+    printf("\n--- Priority Step 1: Who runs first? (Expected: PID %d) ---\n", high_prio_pid);
+    dispatchPriority(); // Should pick Priority 1
     printListSnapshot();
 
-    printf("\n--- FCFS Step 5: Schedule Last Process ---\n");
-    nextPid = scheduleNextProcessFCFS();
-    printf("Next Scheduled PID (Expected: 3): %d\n", nextPid);
-
-    dispatchFCFS();
+    printf("\n--- Priority Step 2: Who runs next? (Expected: PID %d) ---\n", mid_prio_pid);
+    dispatchPriority(); // Should pick Priority 5
     printListSnapshot();
 
-    printf("\n--- FCFS Step 6: Cleanup ---\n");
-    terminateProcess(3);
-	dispatchFCFS();
+    printf("\n--- Priority Step 3: Cleanup ---\n");
+    terminateProcess(low_prio_pid);
     printListSnapshot();
 
     return 0;
 }
-
