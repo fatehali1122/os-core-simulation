@@ -27,5 +27,14 @@ int scheduleNextProcessFCFS(void);
 void dispatchFCFS(void);
 int getprocessTableCount();
 
-#endif
 
+
+// Functions for Round Robin Logic
+int scheduleNextProcessRR(void);
+void dispatchRR(int time_quantum);
+
+// Functions for Priority Scheduling Logic
+int scheduleNextProcessPriority(void);
+void dispatchPriority(void);
+
+#endif
