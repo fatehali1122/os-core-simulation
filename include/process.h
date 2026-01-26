@@ -39,4 +39,3 @@ const char* getStateString(enum ProcessState s);
 
 
 #endif
-
