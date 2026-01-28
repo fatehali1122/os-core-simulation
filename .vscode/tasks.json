@@ -8,10 +8,10 @@
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
-                "${workspaceFolder}/src/*.c", // Compiles all .c files in src
-                "-I${workspaceFolder}/include", // Tells gcc where your headers are
+                "${workspaceFolder}/src/*.c",             // Includes every .c file in your src folder
+                "-I${workspaceFolder}/include",          // Tells the compiler where your .h files are
                 "-o",
-                "${workspaceFolder}/build/main.exe" // Saves the output in a build folder
+                "${workspaceFolder}/src/main.exe"        // The name of your output program
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
