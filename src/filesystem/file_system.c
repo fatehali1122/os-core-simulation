@@ -5,7 +5,6 @@
 
 /* =====================================
    FILE METADATA STRUCTURE
-   New: represents a simulated file
    ===================================== */
 typedef struct FileNode {
     char name[32];           
