@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../include/file_system.h"
+#include "file_system.h"
 
 /* =====================================
    FILE METADATA STRUCTURE
