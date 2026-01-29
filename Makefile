@@ -12,7 +12,7 @@ endif
 
 # Compiler setup
 CC = gcc
-CFLAGS = -Wall -Wextra -I./include 
+CFLAGS = -Wall -Wextra -I./include
 
 SRCS = src/filesystem/file_system.c \
        src/interrupt/interrupt.c \
@@ -20,6 +20,7 @@ SRCS = src/filesystem/file_system.c \
        src/process/process_scheduler.c \
 	   src/process/process.c \
        src/syscall/syscall.c \
+	   tests/InterruptSimulationTest.c \
        src/main.c
 
 

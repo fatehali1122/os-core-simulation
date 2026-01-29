@@ -1,4 +1,4 @@
-#include <stdio.h>
+/*#include <stdio.h>
 
 #include "../include/process.h"
 #include "../include/process_scheduler.h"
@@ -88,4 +88,4 @@ int main() {
     printListSnapshot();
 
     return 0;
-}
+}*/
