@@ -3,6 +3,7 @@
 #include <string.h>
 #include "../../include/file_system.h"
 
+
 /* =====================================
    FILE METADATA STRUCTURE
    ===================================== */
@@ -163,10 +164,5 @@ void fs_cleanup(void)
         free(tmp->content);
         free(tmp);
     }
-    fs_head = NULL;
-}
-
-void fs_init(void)
-{
     fs_head = NULL;
 }
