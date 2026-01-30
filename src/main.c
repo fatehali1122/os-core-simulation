@@ -1,147 +1,207 @@
+/* =============================================================
+ * MAIN SIMULATION CONTROLLER
+ * Acts as the "Motherboard" connecting User, CPU, and Kernel.
+ * ============================================================= */
 
 #include <stdio.h>
-#include <string.h>
-#include "../include/syscall.h"
+#include <stdlib.h>
 
-#define MAX_NAME 32
-#define MAX_DATA 256
+// Include the Public APIs
+#include "syscall.h"
+#include "process_scheduler.h"
+#include "file_system.h" // For permissions flags
 
-void show_menu(void)
-{
-    printf("\n====== OS SIMULATION MENU ======\n");
-    printf("1. Create Process\n");
-    printf("2. Terminate Process\n");
-    printf("3. Allocate Memory\n");
-    printf("4. Deallocate Memory\n");
-    printf("5. Create File\n");
-    printf("6. Write File\n");
-    printf("7. Read File\n");
-    printf("8. Show Process List\n");
-    printf("9. Show Memory Map\n");
-    printf("10. List Files\n");
-    printf("11.Change Process State\n");
-    printf("0. Exit\n");
-    printf("Choose an option: ");
+void printHeader(const char* title) {
+    printf("\n=========================================\n");
+    printf("  %s\n", title);
+    printf("=========================================\n");
 }
 
-int main(void)
-{
+void waitForEnter() {
+    printf("\n[Press Enter to Continue]");
+    while(getchar() != '\n');
+    getchar(); // Catch the newline
+}
+
+// --- SUB-MENUS ---
+
+void menu_filesystem() {
     int choice;
-    sys_init();
+    char name[32];
+    char content[100];
 
-    while (1)
-    {
-        show_menu();
+    do {
+        printHeader("FILE SYSTEM MENU");
+        sys_list_files(); 
+        printf("\n1. Create File\n");
+        printf("2. Write File\n");
+        printf("3. Read File\n");
+        printf("4. Delete File\n");
+        printf("0. Back\n");
+        printf("Select: ");
+        scanf("%d", &choice);
 
-        if (scanf("%d", &choice) != 1)
-        {
-            while (getchar() != '\n')
-                ;
-            continue;
+        switch(choice) {
+            case 1:
+                printf("Filename: "); scanf("%s", name);
+                // Create with Read(1) + Write(2) = 3 permissions
+                if(sys_create_file(name, 3) == 0) printf("Success.\n");
+                break;
+            case 2:
+                printf("Filename: "); scanf("%s", name);
+                printf("Content: "); scanf(" %[^\n]", content); // Read line
+                sys_write_file(name, content);
+                break;
+            case 3:
+                printf("Filename: "); scanf("%s", name);
+                sys_read_file(name);
+                break;
+            case 4:
+                printf("Filename: "); scanf("%s", name);
+                sys_delete_file(name);
+                break;
+            case 0: break;
         }
+        if(choice != 0) waitForEnter();
+    } while(choice != 0);
+}
 
-        if (choice == 0)
-            break;
+void menu_processes() {
+    int choice, pid, prio, burst, mem;
+    
+    do {
+        printHeader("PROCESS MANAGEMENT");
+        sys_get_process_list();
+        printf("\n1. Create New Process\n");
+        printf("2. Terminate Process\n");
+        printf("0. Back\n");
+        printf("Select: ");
+        scanf("%d", &choice);
 
-        switch (choice)
-        {
-        case 1:
-        {
-            int priority, burst, mem;
-            printf("Priority BurstTime MemoryUsage: ");
-            scanf("%d %d %d", &priority, &burst, &mem);
-            int pid = sys_create_process(priority, burst, mem);
-            if (pid != -1)
-                printf("Process created with PID %d\n", pid);
-            break;
+        switch(choice) {
+            case 1:
+                printf("Priority (0-Highest): "); scanf("%d", &prio);
+                printf("Burst Time: "); scanf("%d", &burst);
+                printf("Memory (MB): "); scanf("%d", &mem);
+                
+                pid = sys_create_process(prio, burst, mem);
+                if (pid != -1) 
+                    printf("Process Created Successfully. PID: %d\n", pid);
+                else 
+                    printf("Failed to create process (Memory Full?).\n");
+                break;
+            case 2:
+                printf("Enter PID to Kill: "); scanf("%d", &pid);
+                if(sys_terminate_process(pid) == 0)
+                    printf("Process %d Terminated.\n", pid);
+                else
+                    printf("Failed to terminate process.\n");
+                break;
+            case 0: break;
         }
+        if(choice != 0) waitForEnter();
+    } while (choice != 0);
+}
 
-        case 2:
-        {
-            int pid;
-            printf("PID to terminate: ");
-            scanf("%d", &pid);
-            sys_terminate_process(pid);
-            break;
-        }
+// --- MAIN LOOP ---
 
-        case 3:
-        {
-            int pid, size, strategy;
-            printf("PID Size Strategy(1=FF,2=BF,3=WF)\n");
-            printf("PID Size Strategy: ");
-            scanf("%d %d %d", &pid, &size, &strategy);
-            sys_allocate_memory(pid, size, strategy);
-            break;
-        }
+int main() {
+    int choice;
+    
+    // 1. BOOT THE SYSTEM
+    printHeader("BOOTING OS SIMULATION...");
+    sys_init(); 
+    
+    // Create some default processes for testing
+    printf("\n[BOOT] Loading background services...\n");
+    sys_create_process(1, 50, 100); // PID 1
+    sys_create_file("boot.log", 3);
+    sys_write_file("boot.log", "System Booted Successfully.");
 
-        case 4:
-        {
-            int pid;
-            printf("PID to deallocate memory: ");
-            scanf("%d", &pid);
-            sys_deallocate_memory(pid);
-            break;
-        }
+    // 2. MAIN KERNEL LOOP
+    while(1) {
+        // A. EXECUTE PENDING INTERRUPTS (The Hardware Phase)
+        // This checks if any timers or I/O events occurred
+        sys_execute_interrupts();
 
-        case 5:
-        {
-            char name[MAX_NAME];
-            int perm;
-            printf("File name & permissions: ");
-            scanf("%s %d", name, &perm);
-            sys_create_file(name, perm);
-            break;
-        }
+        // B. USER INTERFACE
+        printHeader("KERNEL DASHBOARD");
+        printf("1. Process Manager (Create/Kill)\n");
+        printf("2. File System\n");
+        printf("3. Memory Map\n");
+        printf("-----------------------------\n");
+        printf("4. [CPU] Run Scheduler (Round Robin)\n");
+        printf("5. [CPU] Run Scheduler (Priority)\n");
+        printf("6. [CPU] Run Scheduler (FCFS)\n");
+        printf("-----------------------------\n");
+        printf("7. [HW] Trigger I/O Interrupt (Simulate Disk)\n");
+        printf("8. [HW] Trigger Timer Interrupt (Simulate Clock)\n");
+        printf("0. Shutdown\n");
+        printf("Select: ");
+        
+        scanf("%d", &choice);
 
-        case 6:
-        {
-            char name[MAX_NAME];
-            char data[MAX_DATA];
-            printf("File name: ");
-            scanf("%s", name);
-            getchar();
-            printf("Data: ");
-            fgets(data, MAX_DATA, stdin);
-            data[strcspn(data, "\n")] = 0;
-            sys_write_file(name, data);
-            break;
-        }
+        int pid;
+        switch(choice) {
+            case 1: 
+                menu_processes(); 
+                break;
+                
+            case 2: 
+                menu_filesystem(); 
+                break;
+                
+            case 3: 
+                sys_get_memory_map(); 
+                waitForEnter(); 
+                break;
 
-        case 7:
-        {
-            char name[MAX_NAME];
-            printf("File name: ");
-            scanf("%s", name);
-            sys_read_file(name);
-            break;
-        }
+            case 4: // ROUND ROBIN
+                printf("\n--- CPU RUNNING (Round Robin Q=20) ---\n");
+                dispatchRR(20); 
+                waitForEnter();
+                break;
 
-        case 8:
-            sys_get_process_list();
-            break;
+            case 5: // PRIORITY
+                printf("\n--- CPU RUNNING (Priority) ---\n");
+                dispatchPriority();
+                waitForEnter();
+                break;
+                
+            case 6: // FCFS
+                printf("\n--- CPU RUNNING (FCFS) ---\n");
+                dispatchFCFS();
+                waitForEnter();
+                break;
 
-        case 9:
-            sys_get_memory_map();
-            break;
+            case 7: // INTERRUPT: I/O
+                printf("Enter PID requesting I/O: "); scanf("%d", &pid);
+                // This raises the interrupt -> Queued -> Handle -> Process Blocked
+                if(sys_io_request(pid) == 0)
+                    printf("I/O Interrupt Raised for PID %d (Will process on next cycle)\n", pid);
+                else
+                    printf("Invalid PID.\n");
+                waitForEnter();
+                break;
 
-        case 10:
-            sys_list_files();
-            break;
+            case 8: // INTERRUPT: TIMER
+                printf("Enter PID to Preempt: "); scanf("%d", &pid);
+                // This raises the interrupt -> Queued -> Handle -> Process Ready
+                if(sys_scheduler_timer(pid) == 0)
+                    printf("Timer Interrupt Raised for PID %d\n", pid);
+                else
+                    printf("Invalid PID.\n");
+                waitForEnter();
+                break;
 
-        case 11:
-            int pid;
-            printf("PID to change state: ");
-            scanf("%d", &pid);
-            sys_change_process_state(pid);
-            break;
+            case 0:
+                printf("Shutting down...\n");
+                exit(0);
 
-        default:
-            printf("Invalid option\n");
+            default:
+                printf("Invalid selection.\n");
         }
     }
 
-    printf("Exiting OS Simulation...\n");
     return 0;
 }
-

@@ -35,8 +35,9 @@ const char* getStateString(enum ProcessState s);
 int processExists(int pid);
 
 //state transitions made more robust
-void processPreempt(int pid);	// Timer Interrupt [Running] -> [Ready]
-void processBlock(int pid);		// I/O Request [Running] -> [Waiting]
-void processWakeup(int pid);	// I/O complete [Waiting] -> [Ready]
-
+void processAdmit(int pid);		//State: [NEW] -> [READY]
+void processDispatch(int pid);	//Scheduling process: [READY] -> [RUNNING]
+void processPreempt(int pid);	// Timer Interrupt [RUNNING] -> [READY]
+void processBlock(int pid);		// I/O Request [RUNNING] -> [WAITING]
+void processWakeup(int pid);	// I/O complete [Waiting] -> [READY]
 #endif
