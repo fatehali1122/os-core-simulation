@@ -1,0 +1,29 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "cppbuild",
+            "label": "C/C++: gcc.exe build active file",
+            "command": "C:/msys64/ucrt64/bin/gcc.exe",
+            "args": [
+                "-fdiagnostics-color=always",
+                "-g",
+                "${workspaceFolder}/src/*.c",             // Includes every .c file in your src folder
+                "-I${workspaceFolder}/include",          // Tells the compiler where your .h files are
+                "-o",
+                "${workspaceFolder}/src/main.exe"        // The name of your output program
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "compiler: C:/msys64/ucrt64/bin/gcc.exe"
+        }
+    ]
+}
