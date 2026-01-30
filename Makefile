@@ -21,6 +21,7 @@ SRCS = src/filesystem/file_system.c \
 	   src/process/process.c \
        src/syscall/syscall.c \
 	   tests/InterruptSimulationTest.c \
+	   tests/FileSystemTest.c \
        src/main.c
 
 
