@@ -147,6 +147,7 @@ int processExists(int pid)
 {
     if(pid <= 0)
     {
+        printf("Invalid PID\n");
         return 0;
     }
     return findNodeInternal(pid,NULL) !=NULL;
