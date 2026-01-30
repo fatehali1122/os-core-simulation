@@ -33,6 +33,8 @@ void terminateProcess(int pid);
 struct Node* getProcessHead();
 //getter for state of process
 const char* getStateString(enum ProcessState s);
+//To check if process exists or not (main purpose is to call it using helper funtion in syscall)
+int processExists(int pid);
 
 
 
