@@ -25,8 +25,6 @@ struct Node* next;
 
 //This funtions create a process
 int processCreation(int priority,int burstTime,int memoryUsage);
-//This funtion changes status of process
-void changeProcessState(int pid);
 //terminates the process explicitly
 void terminateProcess(int pid);
 //getter for head node
@@ -36,8 +34,9 @@ const char* getStateString(enum ProcessState s);
 //To check if process exists or not (main purpose is to call it using helper funtion in syscall)
 int processExists(int pid);
 
-
-
-
+//state transitions made more robust
+void processPreempt(int pid);	// Timer Interrupt [Running] -> [Ready]
+void processBlock(int pid);		// I/O Request [Running] -> [Waiting]
+void processWakeup(int pid);	// I/O complete [Waiting] -> [Ready]
 
 #endif
