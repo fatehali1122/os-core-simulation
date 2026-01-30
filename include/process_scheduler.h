@@ -20,6 +20,21 @@ void sched_init(void);
 struct Node* sched_next(void);
 void sched_update(struct Node* _p, int _t);
 void sched_boost(void);
+void sched_fcfs_update(struct Node* p, int t);
+struct Node* sched_next_fcfs(void);
+
+int scheduleNextProcessFCFS(void);
+void dispatchFCFS(void);
+int getprocessTableCount();
+
+
+
+// Functions for Round Robin Logic
+int scheduleNextProcessRR(void);
+void dispatchRR(int time_quantum);
+
+// Functions for Priority Scheduling Logic
+int scheduleNextProcessPriority(void);
+void dispatchPriority(void);
 
 #endif
-
