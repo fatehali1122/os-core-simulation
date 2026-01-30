@@ -142,3 +142,12 @@ const char* getStateString(enum ProcessState s) {
 struct Node* getProcessHead(void) {
     return head;
 }
+
+int processExists(int pid)
+{
+    if(pid <= 0)
+    {
+        return 0;
+    }
+    return findNodeInternal(pid,NULL) !=NULL;
+}
