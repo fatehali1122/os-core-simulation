@@ -4,7 +4,7 @@
 #include "syscall.h"
 #include "process.h"
 #include "process_scheduler.h"
-#include "memory.h"
+#include "../../include/memory.h"
 #include "file_system.h"
 #include "interrupt.h"
 
