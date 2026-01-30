@@ -1,4 +1,5 @@
 #include "interrupt.h"
+#include "syscall.h"
 #include <stdio.h>
 #include <time.h>
 
@@ -10,13 +11,10 @@ static int head = 0;
 static int tail = 0;
 static int count = 0;
 
-static interruptStateStub stateStub = NULL;
 
 int interruptInit(void) {
 
 	head = tail = count = 0;
-	stateStub = NULL;
-
 	return 0;	
 }
 
@@ -26,10 +24,6 @@ int interruptIsEmpty(void) {
 
 int interruptIsFull(void) {
 	return (count == Maximum_Interrupts);	
-}
-
-void interruptRegisterStateStub(interruptStateStub stub) {
-	stateStub = stub;
 }
 
 int interruptRaise(InterruptType type, int pid, int data) {
@@ -64,8 +58,6 @@ void interruptHandle(const InterruptEvent *event) {
 		return;
 	}
 	printf("[INTERRUPT] type = %d, pid = %d, time = %lld\n", event->type, event->pid, (long long) event->timeStamp);
-	if(stateStub) {
-		stateStub(event->type, event->pid, event->data);
-	}
+	sys_interrupt_handler(event->type, event->pid, event->data);
 	
 }
