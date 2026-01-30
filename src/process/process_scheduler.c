@@ -43,7 +43,9 @@ void sched_init(void) {
 }
 
 void sched_update(struct Node* _p, int _t) {
+
     if (!_p) return;    
+
     _S(_p)._t_tot += _t;
     _S(_p)._t_sl = (_S(_p)._t_sl > (unsigned int)_t) ? (_S(_p)._t_sl - _t) : 0;
     _p->pcb.burstTime = (_p->pcb.burstTime > _t) ? (_p->pcb.burstTime - _t) : 0;
