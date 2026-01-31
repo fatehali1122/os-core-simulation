@@ -1,11 +1,12 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "../../include/syscall.h"
-#include "../../include/process.h"
-#include "../../include/process_scheduler.h"
+#include "syscall.h"
+#include "process.h"
+#include "process_scheduler.h"
 #include "../../include/memory.h"
-#include "../../include/file_system.h"
+#include "file_system.h"
+#include "interrupt.h"
 
 static int is_valid_pid(int pid)
 {
@@ -21,7 +22,7 @@ static int is_valid_filename(const char *name)
 {
     if(!name || strlen(name) == 0 || strlen(name) >= 32)
     {
-        printf("Invalide file name\n");
+        printf("Invalid file name\n");
         return 0;
     }
     return 1;
@@ -32,12 +33,13 @@ void sys_init(void)
     sched_init();          //scheduler file
     initializeMemory();    //Memory file
     fs_init();
-    printf("System Initialized via system call");
+	interruptInit();		//interrupts initialized
+    printf("System Initialized via system call\n");
 }
 
-int sys_create_process(int priority,int brustTime,int memSize)
+int sys_create_process(int priority,int burstTime,int memSize)
 {
-    int pid = processCreation(priority,brustTime,memSize);
+    int pid = processCreation(priority,burstTime,memSize);
     if(pid == -1)
     {
         return -1;
@@ -49,7 +51,8 @@ int sys_create_process(int priority,int brustTime,int memSize)
         terminateProcess(pid);
         return -1;
     }
-
+	
+	processAdmit(pid);
     return pid;
 }
 
@@ -156,14 +159,54 @@ int sys_get_memory_map(void)
     printFragmentationStats(); 
     return 0;
 }
+//hardware triggers
+int sys_scheduler_timer(int pid) {
+	
+	if(!processExists(pid)){
+		return -1;
+	}
+	return interruptRaise(INTERRUPT_TIMER, pid, 0);
+	
+}
+int sys_io_request(int pid) {
+	
+	if(!processExists(pid)){
+		return -1;
+	}
+	return interruptRaise(INTERRUPT_IO, pid, 0);
+	
+}
+//handler for interrupts via system calls
+void sys_interrupt_handler(InterruptType type, int pid, int data) {
+	
+	(void)data;
+	switch(type) {
+		
+		case INTERRUPT_TIMER:
+			processPreempt(pid);
+			break;
+			
+		case INTERRUPT_IO:
+			processBlock(pid);
+			break;
+			
+		case INTERRUPT_SYSCALL:
+			printf("[SYSTEM_INTERRUPT] System Call requested.\n");
+			break;
+			
+		default:
+			printf("Unknown Interrupt Type\n");
+				
+	}
+		
+}
 
-int sys_change_process_state(int pid)
-{
-    if (!processExists(pid)) {
-        printf("Process %d does not exist.\n", pid);
-        return -1;
-    }
-
-    changeProcessState(pid); // calls your process module function
-    return 0;
+void sys_execute_interrupts(void) {
+	
+	InterruptEvent event;
+	
+	while (interruptFetch(&event) == 0) {
+		interruptHandle(&event);
+	}
+	
 }

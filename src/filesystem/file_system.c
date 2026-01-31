@@ -1,12 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../../include/file_system.h"
+#include "file_system.h"
 
 
 /* =====================================
    FILE METADATA STRUCTURE
    ===================================== */
+
+
+
 typedef struct FileNode {
     char name[32];           
     int permissions;         // READ/WRITE
@@ -16,6 +19,7 @@ typedef struct FileNode {
 } FileNode;
 
 static FileNode *fs_head = NULL;
+static int file_count = 0;
 
 static FileNode* findFile(const char *name)
 {
@@ -51,6 +55,7 @@ int fs_createFile(const char *name, int permissions)
     file->next = fs_head;
     fs_head = file;
 
+	file_count++;
     printf("File '%s' created\n", name);
     return 0;
 }
@@ -122,7 +127,7 @@ int fs_deleteFile(const char *name)
                 prev->next = curr->next;
             else
                 fs_head = curr->next;
-
+			file_count--;
             free(curr->content);
             free(curr);
 
@@ -165,4 +170,22 @@ void fs_cleanup(void)
         free(tmp);
     }
     fs_head = NULL;
+}
+
+void fs_init(void)
+{
+	if(fs_head != NULL) {
+		
+		fs_cleanup();
+		
+	}
+    fs_head = NULL;
+    file_count = 0;
+	printf("File System Initialized.\n");
+}
+
+int getFileCount(void) {
+	
+	return file_count;
+	
 }

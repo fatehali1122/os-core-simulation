@@ -1,7 +1,7 @@
 // a process scheduler from my side
 // baqi ap ne khud implement krne hain
 
-#include "../../include/process_scheduler.h"
+#include "process_scheduler.h"
 #include<stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -196,7 +196,7 @@ void dispatchRR(int time_quantum) {
     }
 
     
-    p->pcb.status = RUNNING;
+    processDispatch(p->pcb.pid);
     printf("Dispatching PID %d (RR) for max %d ticks\n", p->pcb.pid, time_quantum);
 
     
@@ -211,7 +211,7 @@ void dispatchRR(int time_quantum) {
         terminateProcess(p->pcb.pid);
     } else {
         printf("Process %d Time Slice expired (Remaining: %d). Re-queueing.\n", p->pcb.pid, p->pcb.burstTime);
-        p->pcb.status = READY; 
+        processPreempt(p->pcb.pid); 
   
     }
 }
