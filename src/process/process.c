@@ -23,7 +23,7 @@ static struct Node* findNodeInternal(int pid, struct Node** prevNode) {
 
 static int generateSafePid(void) {
     if (processIdCount < INT_MAX) {
-        return processIdCount++;
+        return ++processIdCount; 
     }
     int candidate = 1;
     while (candidate < INT_MAX) {
@@ -124,65 +124,41 @@ int processExists(int pid)
 }
 
 void processAdmit(int pid) {
-	
 	struct Node* node = findNodeInternal(pid, NULL);
-
 	if(node && node->pcb.status == NEW) {
-
 			node->pcb.status = READY;
 			printf("[STATUS] PID %d Admitted: NEW -> READY\n", pid);
-			
 	}
-	
 }
 
 void processDispatch(int pid) {
-	
 	struct Node* node = findNodeInternal(pid, NULL);
-
 	if(node && node->pcb.status == READY) {
-
 			node->pcb.status = RUNNING;
 			printf("[STATUS] PID %d Dispatched: READY -> RUNNING\n", pid);
-			
 	}
-	
 }
 	
 void processPreempt(int pid) {
-	
 	struct Node* node = findNodeInternal(pid, NULL);
-
-	if(node && node->pcb.status == RUNNING) {
-
+	if(node && (node->pcb.status == RUNNING || node->pcb.status == READY)) {
 			node->pcb.status = READY;
-			printf("[STATUS] PID %d Preempted: RUNNING -> READY\n", pid);
-			
+			printf("[STATUS] PID %d Preempted: Forced to READY\n", pid);
 	}
-	
 }
 
 void processBlock(int pid) {
-	
 	struct Node* node = findNodeInternal(pid, NULL);
-	
-	if(node && node->pcb.status == RUNNING) {
-
+	if(node && (node->pcb.status == RUNNING || node->pcb.status == READY)) {
 			node->pcb.status = WAITING;
-			printf("[STATUS] PID %d Blocked: RUNNING -> WAITING", pid);
-			
+			printf("[STATUS] PID %d Blocked: Moved to WAITING\n", pid); 
 	}
-	
 }
 
 void processWakeup(int pid) {
-	
 	struct Node* node = findNodeInternal(pid, NULL);
 	if(node && node->pcb.status == WAITING) {
-
 			node->pcb.status = READY;
-			printf("[STATUS] PID %d Woken Up: WAITING -> READY", pid);
-			
+			printf("[STATUS] PID %d Woken Up: WAITING -> READY\n", pid); 
 	}
-	
 }
